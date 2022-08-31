@@ -1,8 +1,8 @@
 let squareAmount;
 let squareDimensions;
-let drawColor = "blue";
+let drawColor = "#000000";
 
-async function generateSquares(_container, _squareAmount) {
+function generateSquares(_container, _squareAmount) {
 
     for (i = 1; i <= _squareAmount; i++) {
         const gridSquare = document.createElement("div");
@@ -20,18 +20,33 @@ async function generateSquares(_container, _squareAmount) {
     }
 }
 
+function setGrid(_containerWidth, _container) {
+    let gridLength = prompt("Please set the grid resolution (e.g. '100' for 100x100)", "100");
+
+    squareAmount = Math.pow(gridLength, 2);
+    squareDimensions = _containerWidth / gridLength;
+
+    generateSquares(_container, squareAmount);
+}
+
 async function main() {
     const container = document.querySelector(".container");
     const containerObj = window.getComputedStyle(container);
     const containerWidthString = containerObj.getPropertyValue("width");
     const containerWidth = containerWidthString.substring(0, containerWidthString.length - 2);
 
-    let gridLength = await prompt("Please set the grid resolution (e.g. '100' for 100x100)", "100");
+    const colorPicker = document.querySelector(".color-input");
+    colorPicker.addEventListener("input", (e) => {
+        drawColor = e.target.value;
+    });
 
-    squareAmount = Math.pow(gridLength, 2);
-    squareDimensions = containerWidth / gridLength;
+    setGrid(containerWidth, container);
 
-    await generateSquares(container, squareAmount);
+    const resetButton = document.querySelector(".reset");
+    resetButton.addEventListener("click", (e) => {
+        container.replaceChildren();
+        setGrid(containerWidth, container);
+    });
 }
 
 main();
